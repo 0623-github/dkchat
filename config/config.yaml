@@ -1,0 +1,5 @@
+user: ldk
+sqluser: root
+sqlpwd: 000000
+dbname: chat
+sqlhost: localhost:3306
