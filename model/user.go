@@ -18,3 +18,7 @@ type User struct {
 	// 等级
 	Grade string
 }
+
+func (User)TableName() string {
+	return "user"
+}
