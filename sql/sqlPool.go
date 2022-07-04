@@ -1,4 +1,4 @@
-package main
+package sql
 
 import (
 	"fmt"
@@ -24,6 +24,8 @@ func NewPool(len int) *Pool {
 		db, err := gorm.Open("mysql", conn)
 		if err != nil {
 			logger := log.Default()
+			logger.Println("errorerrorerrorerrorerrorerror")
+			logger.Println(conn)
 			logger.Println(err)
 			return nil
 		}
