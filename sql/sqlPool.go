@@ -1,9 +1,9 @@
 package sql
 
 import (
+	"dkchat/config"
 	"fmt"
 	"github.com/jinzhu/gorm"
-	"github.com/spf13/viper"
 	"log"
 	"sync"
 )
@@ -25,7 +25,8 @@ func NewPool() *Pool {
 			db:   make(chan *gorm.DB, poolSize),
 			size: poolSize,
 		}
-		conn := fmt.Sprintf("%s:%s@(%s)/%s?charset=utf8mb4&parseTime=True", viper.Get("sqluser"), viper.Get("sqlpwd"), viper.Get("sqlhost"), viper.Get("dbname"))
+		v := config.GetConfig()
+		conn := fmt.Sprintf("%s:%s@(%s)/%s?charset=utf8mb4&parseTime=True", v.Get("sqluser"), v.Get("sqlpwd"), v.Get("sqlhost"), v.Get("dbname"))
 		for i := 0; i < poolSize; i ++ {
 			db, err := gorm.Open("mysql", conn)
 			if err != nil {
