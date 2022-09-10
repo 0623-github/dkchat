@@ -15,5 +15,4 @@ func TestSql(t *testing.T) {
 		return db.First(&model.User{})
 	})
 	println(ans.(*gorm.DB).RowsAffected)
-	sql.DeletePool(pool)
 }

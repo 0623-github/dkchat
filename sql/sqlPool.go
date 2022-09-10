@@ -47,13 +47,3 @@ func (p *Pool)Exec(execFunc ExecFunc) interface{} {
 	}()
 	return execFunc(db)
 }
-
-func DeletePool(pool *Pool) {
-	for i := 0; i < pool.size; i ++ {
-		db := <-pool.db
-		err := db.Close()
-		if err != nil {
-			return
-		}
-	}
-}
