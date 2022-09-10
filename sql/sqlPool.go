@@ -5,6 +5,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/spf13/viper"
 	"log"
+	"sync"
 )
 
 type Pool struct {
@@ -14,23 +15,28 @@ type Pool struct {
 
 type ExecFunc func(db *gorm.DB) interface{}
 
-func NewPool(len int) *Pool {
-	p := &Pool{
-		db: make(chan *gorm.DB, len),
-		size: len,
-	}
-	conn := fmt.Sprintf("%s:%s@(%s)/%s?charset=utf8mb4&parseTime=True", viper.Get("sqluser"), viper.Get("sqlpwd"), viper.Get("sqlhost"), viper.Get("dbname"))
-	for i := 0; i < len; i ++ {
-		db, err := gorm.Open("mysql", conn)
-		if err != nil {
-			logger := log.Default()
-			logger.Println("errorerrorerrorerrorerrorerror")
-			logger.Println(conn)
-			logger.Println(err)
-			return nil
+// NewPool Singleton mode
+func NewPool() *Pool {
+	var p *Pool
+	var once sync.Once
+	poolSize := 10
+	once.Do(func() {
+		p = &Pool{
+			db:   make(chan *gorm.DB, poolSize),
+			size: poolSize,
 		}
-		p.db <- db
-	}
+		conn := fmt.Sprintf("%s:%s@(%s)/%s?charset=utf8mb4&parseTime=True", viper.Get("sqluser"), viper.Get("sqlpwd"), viper.Get("sqlhost"), viper.Get("dbname"))
+		for i := 0; i < poolSize; i ++ {
+			db, err := gorm.Open("mysql", conn)
+			if err != nil {
+				logger := log.Default()
+				logger.Println("errorerrorerrorerrorerrorerror")
+				logger.Println(conn)
+				logger.Println(err)
+			}
+			p.db <- db
+		}
+	})
 	return p
 }
 

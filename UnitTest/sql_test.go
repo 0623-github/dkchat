@@ -8,12 +8,9 @@ import (
 	"testing"
 )
 
-func init() {
-
-}
 
 func TestSql(t *testing.T) {
-	pool := sql.NewPool(10)
+	pool := sql.NewPool()
 	ans := pool.Exec(func(db *gorm.DB) interface{}{
 		return db.First(&model.User{})
 	})

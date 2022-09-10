@@ -1,7 +1,6 @@
 package model
 
 import (
-	"dkchat/sql"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
@@ -22,20 +21,4 @@ type User struct {
 
 func (User)TableName() string {
 	return "user"
-}
-
-func init() {
-	pool := sql.NewPool(1)
-	pool.Exec(func(db *gorm.DB) interface{} {
-		db.AutoMigrate(&User{})
-		u1 := User{
-			RealName: "ldk",
-			NickName: "sqrt3",
-			Age: 13,
-			Pwd: "123456",
-			Grade: "10",
-		}
-		db.Create(&u1)
-		return nil
-	})
 }
