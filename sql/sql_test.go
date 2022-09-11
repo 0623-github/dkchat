@@ -1,16 +1,15 @@
-package UnitTest
+package sql
 
 import (
 	_ "dkchat/config"
 	"dkchat/model"
-	"dkchat/sql"
 	"github.com/jinzhu/gorm"
 	"testing"
 )
 
 
 func TestSql(t *testing.T) {
-	pool := sql.NewPool()
+	pool := NewPool()
 	ans := pool.Exec(func(db *gorm.DB) interface{}{
 		return db.First(&model.User{})
 	})
