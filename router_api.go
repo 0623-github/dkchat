@@ -8,5 +8,5 @@ import (
 func registerApi(r *gin.Engine) {
 	r.GET("/ping", handler.Ping)
 	r.POST("/signUp", handler.SignUp)
-	r.POST("/signIn", handler.SignIn)
+	r.GET("/signIn", handler.SignIn)
 }

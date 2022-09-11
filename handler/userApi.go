@@ -47,8 +47,50 @@ func SignUp(ctx *gin.Context) {
 	ctx.JSON(200,&resp)
 }
 
-func SignIn(ctx *gin.Context) {
+// signInRequest var
+type signInRequest struct {
+	AccountNumber string `json:"account_number"`
+	Pwd string `json:"pwd"`
+}
+// signInResponse var
+type signInResponse struct {
+	Code int `json:"code"`
+	Message string `json:"message"`
+	AccountNumber string `json:"account_number"`
+	NickName string `json:"nick_name"`
+	Grade int `json:"grade"`
+}
 
+func SignIn(ctx *gin.Context) {
+	req := &signInRequest{}
+	resp := &signInResponse{
+		Code: util.StatusSuccess,
+		Message: "登陆成功",
+	}
+	err := ctx.BindJSON(req)
+	if err != nil {
+		fmt.Println(err)
+		resp.Code = util.StatusParamErr
+		resp.Message = "注册参数错误"
+	} else {
+		user := &model.User{
+			AccountNumber: req.AccountNumber,
+		}
+		sql.SelectUserByAccount(user)
+		fmt.Println(user.Pwd, req.Pwd)
+		if req.Pwd == "" {
+			resp.Code = util.StatusPwdErr
+			resp.Message = "密码为空"
+		} else if user.Pwd != req.Pwd {
+			resp.Code = util.StatusPwdErr
+			resp.Message = "密码错误，请重试"
+		} else {
+			resp.NickName = user.NickName
+			resp.Grade = user.Grade
+			resp.AccountNumber = user.AccountNumber
+		}
+	}
+	ctx.JSON(200, resp)
 }
 
 func Ping(c *gin.Context) {
