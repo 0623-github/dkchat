@@ -63,6 +63,7 @@ type signInResponse struct {
 	NickName string `json:"nick_name"`
 	Grade int `json:"grade"`
 	Result bool `json:"result"`
+	Token string `json:"token"`
 }
 
 func SignIn(ctx *gin.Context) {
@@ -93,6 +94,13 @@ func SignIn(ctx *gin.Context) {
 		resp.Grade = user.Grade
 		resp.AccountNumber = user.AccountNumber
 		resp.Result = true
+		token, err := util.GeneralToken(util.UserToUserClaims(user))
+		resp.Token = token
+		if err != nil {
+			resp.Code = util.StatusGeneralTokenErr
+			resp.Message = "后端生成token错误，请重试"
+			resp.Result = false
+		}
 	}
 	ctx.JSON(200, resp)
 }
