@@ -15,12 +15,15 @@ type Pool struct {
 
 type ExecFunc func(db *gorm.DB) interface{}
 
+var (
+	once sync.Once
+	p *Pool
+)
 // NewPool Singleton mode
 func NewPool() *Pool {
-	var p *Pool
-	var once sync.Once
 	poolSize := 10
 	once.Do(func() {
+		fmt.Println("init sql pool!!")
 		p = &Pool{
 			db:   make(chan *gorm.DB, poolSize),
 			size: poolSize,
