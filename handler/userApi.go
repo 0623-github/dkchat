@@ -32,8 +32,8 @@ func SignUp(ctx *gin.Context) {
 		Message: "success",
 		Result: true,
 	}
-	fmt.Println(ctx)
 	err := ctx.BindJSON(req)
+	fmt.Println(req)
 	if err != nil {
 		fmt.Println(err)
 		resp.Code = util.StatusParamErr
